@@ -1,9 +1,7 @@
-version: '3'
-
 services:
   nav-item:
     build:
-      context: .
+      context: https://github.com/yuhuan457/nav-item.git#main
       dockerfile: Dockerfile
     container_name: nav-item
     ports:

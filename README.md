@@ -48,12 +48,10 @@ npm start
 在 1Panel 或服务器中拉取本仓库源码后，使用下面的 `docker-compose.yml` 从当前源码构建镜像：
 
 ```yaml
-version: '3'
-
 services:
   nav-item:
     build:
-      context: .
+      context: https://github.com/yuhuan457/nav-item.git#main
       dockerfile: Dockerfile
     container_name: nav-item
     ports:
