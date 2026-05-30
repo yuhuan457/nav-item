@@ -38,8 +38,8 @@ const defaults = {
   friendLinksText: '友情链接',
   showFooterCopyright: true,
   footerCopyrightText: 'Copyright © 2025 Nav-Item',
-  footerPoweredText: 'Powered by eooce',
-  footerPoweredUrl: 'https://github.com/eooce/Nav-Item'
+  footerPoweredText: 'Powered by yuhuan457',
+  footerPoweredUrl: 'https://github.com/yuhuan457/nav-item'
 };
 
 function coerceValue(key, value) {
