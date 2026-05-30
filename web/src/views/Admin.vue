@@ -1,14 +1,14 @@
-﻿<template>
+<template>
   <div v-if="!isLoggedIn" class="login-container">
     <div class="login-card">
-      <h2 class="login-title">鍚庡彴绠＄悊鐧诲綍</h2>
+      <h2 class="login-title">后台管理登录</h2>
       <div class="login-form">
-        <input v-model="username" type="text" placeholder="鐢ㄦ埛鍚? class="login-input" @keyup.enter="handleLogin" />
+        <input v-model="username" type="text" placeholder="用户名" class="login-input" @keyup.enter="handleLogin" />
         <div class="password-input-wrapper">
           <input
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="瀵嗙爜"
+            placeholder="密码"
             class="login-input password-input"
             @keyup.enter="handleLogin"
           />
@@ -22,10 +22,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            杩斿洖棣栭〉
+            返回首页
           </button>
           <button @click="handleLogin" class="login-btn" :disabled="loading">
-            {{ loading ? '鐧诲綍涓?..' : '鐧诲綍' }}
+            {{ loading ? '登录中...' : '登录' }}
           </button>
         </div>
         <p v-if="loginError" class="login-error">{{ loginError }}</p>
@@ -37,12 +37,12 @@
     <aside class="admin-sider" :class="{ open: siderOpen }" @click.self="closeSider">
       <div class="logo clickable" @click="page='welcome'; closeSider()">Admin</div>
       <ul class="menu-list">
-        <li :class="{active: page==='settings'}" @click="page='settings'; closeSider()">鍩虹璁剧疆</li>
-        <li :class="{active: page==='menu'}" @click="page='menu'; closeSider()">鏍忕洰绠＄悊</li>
-        <li :class="{active: page==='card'}" @click="page='card'; closeSider()">鍗＄墖绠＄悊</li>
-        <li :class="{active: page==='ad'}" @click="page='ad'; closeSider()">骞垮憡绠＄悊</li>
-        <li :class="{active: page==='friend'}" @click="page='friend'; closeSider()">鍙嬮摼绠＄悊</li>
-        <li :class="{active: page==='user'}" @click="page='user'; closeSider()">鐢ㄦ埛绠＄悊</li>
+        <li :class="{active: page==='settings'}" @click="page='settings'; closeSider()">基础设置</li>
+        <li :class="{active: page==='menu'}" @click="page='menu'; closeSider()">栏目管理</li>
+        <li :class="{active: page==='card'}" @click="page='card'; closeSider()">卡片管理</li>
+        <li :class="{active: page==='ad'}" @click="page='ad'; closeSider()">广告管理</li>
+        <li :class="{active: page==='friend'}" @click="page='friend'; closeSider()">友链管理</li>
+        <li :class="{active: page==='user'}" @click="page='user'; closeSider()">用户管理</li>
       </ul>
     </aside>
     <main class="admin-main">
@@ -63,20 +63,20 @@
       </div>
       <div class="admin-content">
         <div v-if="page==='welcome'" class="welcome-page">
-          <h2 class="welcome-title">娆㈣繋鎮ㄨ繘鍏?Nav-Item 鍚庡彴绠＄悊绯荤粺</h2>
+          <h2 class="welcome-title">欢迎您进入 Nav-Item 后台管理系统</h2>
           <div class="welcome-cards">
             <div class="welcome-card">
               <div class="welcome-icon time-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1abc9c" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#1abc9c" stroke-width="2" stroke-linecap="round"/></svg>
               </div>
-              <div class="welcome-label">涓婃鐧诲綍鏃堕棿</div>
+              <div class="welcome-label">上次登录时间</div>
               <div class="welcome-value">{{ lastLoginTime || '--' }}</div>
             </div>
             <div class="welcome-card">
               <div class="welcome-icon ip-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1abc9c" stroke-width="2"/><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" stroke="#1abc9c" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="#1abc9c"/></svg>
               </div>
-              <div class="welcome-label">涓婃鐧诲綍IP</div>
+              <div class="welcome-label">上次登录 IP</div>
               <div class="welcome-value">{{ lastLoginIp || '--' }}</div>
             </div>
           </div>
@@ -152,7 +152,7 @@ async function fetchLastLoginInfo() {
 
 async function handleLogin() {
   if (!username.value || !password.value) {
-    loginError.value = '璇疯緭鍏ョ敤鎴峰悕鍜屽瘑鐮?;
+    loginError.value = '请输入用户名和密码';
     return;
   }
   
@@ -168,7 +168,7 @@ async function handleLogin() {
       lastLoginIp.value = response.data.lastLoginIp || '';
     }
   } catch (error) {
-    loginError.value = error.response?.data?.message || '鐧诲綍澶辫触锛岃妫€鏌ョ敤鎴峰悕鍜屽瘑鐮?;
+    loginError.value = error.response?.data?.message || '登录失败，请检查用户名和密码';
   } finally {
     loading.value = false;
   }
