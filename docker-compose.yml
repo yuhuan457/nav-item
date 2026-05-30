@@ -5,7 +5,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: yuhuan457/nav-item:latest
     container_name: nav-item
     ports:
       - "3000:3000"
