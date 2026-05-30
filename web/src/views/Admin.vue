@@ -37,11 +37,11 @@
     <aside class="admin-sider" :class="{ open: siderOpen }" @click.self="closeSider">
       <div class="logo clickable" @click="page='welcome'; closeSider()">Admin</div>
       <ul class="menu-list">
+        <li :class="{active: page==='settings'}" @click="page='settings'; closeSider()">基础设置</li>
         <li :class="{active: page==='menu'}" @click="page='menu'; closeSider()">栏目管理</li>
         <li :class="{active: page==='card'}" @click="page='card'; closeSider()">卡片管理</li>
         <li :class="{active: page==='ad'}" @click="page='ad'; closeSider()">广告管理</li>
         <li :class="{active: page==='friend'}" @click="page='friend'; closeSider()">友链管理</li>
-        <li :class="{active: page==='settings'}" @click="page='settings'; closeSider()">基础设置</li>
         <li :class="{active: page==='user'}" @click="page='user'; closeSider()">用户管理</li>
       </ul>
     </aside>
@@ -102,7 +102,7 @@ import FriendLinkManage from './admin/FriendLinkManage.vue';
 import SettingsManage from './admin/SettingsManage.vue';
 import UserManage from './admin/UserManage.vue';
 
-const page = ref('welcome');
+const page = ref('settings');
 const lastLoginTime = ref('');
 const lastLoginIp = ref('');
 const isLoggedIn = ref(false);

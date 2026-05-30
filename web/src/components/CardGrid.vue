@@ -1,5 +1,5 @@
 <template>
-  <div class="container card-grid" :class="animationClass">
+  <div class="container card-grid" :class="animationClass" :style="gridStyle">
     <div v-for="(card, index) in cards" :key="card.id" 
          class="link-item" 
          :style="getCardStyle(index)">
@@ -12,14 +12,35 @@
 </template>
 
 <script setup>
-import { ref, watch, nextTick } from 'vue';
+import { computed, ref, watch, nextTick } from 'vue';
 
 const props = defineProps({
   cards: Array,
   linkTarget: {
     type: String,
     default: '_blank'
+  },
+  layout: {
+    type: Object,
+    default: () => ({})
   }
+});
+
+const gridStyle = computed(() => {
+  const columns = Math.min(Math.max(Number(props.layout.columns) || 4, 3), 10);
+  const height = Math.min(Math.max(Number(props.layout.height) || 85, 64), 180);
+  const gap = Math.min(Math.max(Number(props.layout.gap) || 15, 4), 36);
+  const iconSize = Math.min(Math.max(Number(props.layout.iconSize) || 25, 16), 56);
+  const textSize = Math.min(Math.max(Number(props.layout.textSize) || 14, 10), 22);
+
+  return {
+    '--card-columns': columns,
+    '--card-height': `${height}px`,
+    '--card-min-height': props.layout.equalHeight ? `${height}px` : '72px',
+    '--card-gap': `${gap}px`,
+    '--card-icon-size': `${iconSize}px`,
+    '--card-text-size': `${textSize}px`
+  };
 });
 
 // 动画状态
@@ -160,24 +181,24 @@ function truncate(str) {
   margin: 0 auto;
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 15px;
+  grid-template-columns: repeat(var(--card-columns, 4), minmax(0, 1fr));
+  gap: var(--card-gap, 15px);
   opacity: 1;
   transition: opacity 0.2s ease;
 }
 @media (max-width: 1200px) {
   .container {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(min(var(--card-columns, 4), 4), minmax(0, 1fr));
   }
 }
 @media (max-width: 768px) {
   .container {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(min(var(--card-columns, 4), 3), minmax(0, 1fr));
   }
 }
 @media (max-width: 480px) {
   .container {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(min(var(--card-columns, 4), 3), minmax(0, 1fr));
   }
 }
 .link-item {
@@ -187,8 +208,8 @@ function truncate(str) {
   transition: all 0.2s;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   text-align: center;
-  min-height: 85px;
-  height: 85px;
+  min-height: var(--card-min-height, 72px);
+  height: var(--card-height, 85px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -214,15 +235,15 @@ function truncate(str) {
   box-sizing: border-box;
 }
 .link-icon {
-  width: 25px;
-  height: 25px;
+  width: var(--card-icon-size, 25px);
+  height: var(--card-icon-size, 25px);
   margin: 4px auto;
   object-fit: contain;
 }
 .link-text {
   padding-right: 4px;
   padding-left: 4px;
-  font-size: 14px;
+  font-size: var(--card-text-size, 14px);
   text-align: center;
   word-break: break-all;
   max-width: 100%;

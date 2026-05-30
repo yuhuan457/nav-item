@@ -52,7 +52,7 @@
       </a>
     </div>
     
-    <CardGrid :cards="filteredCards" :link-target="linkTarget"/>
+    <CardGrid :cards="filteredCards" :link-target="linkTarget" :layout="cardLayout"/>
     
     <footer v-if="settings.showFriendLinks || settings.showFooterCopyright" class="footer">
       <div class="footer-content">
@@ -83,7 +83,7 @@
     <div v-if="showFriendLinks" class="modal-overlay" @click="showFriendLinks = false">
       <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h3>友情链接</h3>
+          <h3>{{ t.friendLinks }}</h3>
           <button @click="showFriendLinks = false" class="close-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M18 6L6 18M6 6l12 12"></path>
@@ -141,13 +141,16 @@ const settings = ref({
   siteDescription: '个人导航站',
   language: 'zh-CN',
   faviconUrl: '/default-favicon.png',
-  theme: 'light',
-  themeColor: '#2566d8',
-  cardBlur: 'none',
   headerStyle: 'simple',
   linkTarget: '_blank',
   fullWidth: false,
+  maxGroupColumns: 4,
   maxBookmarkColumns: 6,
+  cardHeight: 85,
+  cardGap: 15,
+  cardIconSize: 25,
+  cardTextSize: 14,
+  equalHeightCards: false,
   backgroundImageUrl: 'https://main.ssss.nyc.mn/background.webp',
   backgroundBlur: 'none',
   backgroundBrightness: 95,
@@ -161,57 +164,86 @@ const settings = ref({
   footerPoweredUrl: 'https://github.com/yuhuan457/nav-item'
 });
 
-// 聚合搜索配置
-const searchEngines = [
+const i18n = {
+  'zh-CN': {
+    search: '搜索',
+    clear: '清空',
+    notFound: '未找到相关内容',
+    friendLinks: '友情链接',
+    engines: {
+      google: 'Google 搜索...',
+      baidu: '百度搜索...',
+      bing: 'Bing 搜索...',
+      github: 'GitHub 搜索...',
+      site: '站内搜索...'
+    },
+    site: '站内'
+  },
+  en: {
+    search: 'Search',
+    clear: 'Clear',
+    notFound: 'No matching content found',
+    friendLinks: 'Friend Links',
+    engines: {
+      google: 'Search Google...',
+      baidu: 'Search Baidu...',
+      bing: 'Search Bing...',
+      github: 'Search GitHub...',
+      site: 'Search this site...'
+    },
+    site: 'Site'
+  }
+};
+
+const selectedEngineName = ref('google');
+
+const currentLanguage = computed(() => i18n[settings.value.language] ? settings.value.language : 'zh-CN');
+const t = computed(() => i18n[currentLanguage.value]);
+const searchEngines = computed(() => [
   {
     name: 'google',
     label: 'Google',
-    placeholder: 'Google 搜索...',
+    placeholder: t.value.engines.google,
     url: q => `https://www.google.com/search?q=${encodeURIComponent(q)}`
   },
   {
     name: 'baidu',
     label: '百度',
-    placeholder: '百度搜索...',
+    placeholder: t.value.engines.baidu,
     url: q => `https://www.baidu.com/s?wd=${encodeURIComponent(q)}`
   },
   {
     name: 'bing',
     label: 'Bing',
-    placeholder: 'Bing 搜索...',
+    placeholder: t.value.engines.bing,
     url: q => `https://www.bing.com/search?q=${encodeURIComponent(q)}`
   },
   {
     name: 'github',
-    label: 'github',
-    placeholder: 'GitHub 搜索...',
+    label: 'GitHub',
+    placeholder: t.value.engines.github,
     url: q => `https://github.com/search?q=${encodeURIComponent(q)}&type=repositories`
   },
   {
     name: 'site',
-    label: '站内',
-    placeholder: '站内搜索...',
+    label: t.value.site,
+    placeholder: t.value.engines.site,
     url: q => `/search?query=${encodeURIComponent(q)}`
   }
-];
-const selectedEngine = ref(searchEngines[0]);
-
+]);
+const selectedEngine = computed(() => searchEngines.value.find(engine => engine.name === selectedEngineName.value) || searchEngines.value[0]);
 const linkTarget = computed(() => settings.value.linkTarget === '_self' ? '_self' : '_blank');
 const backgroundBlurMap = { none: '0px', sm: '2px', md: '5px', lg: '10px', xl: '16px' };
-const cardBlurMap = { none: '10px', sm: '12px', md: '16px', lg: '22px' };
 
 const homeStyle = computed(() => ({
   '--site-bg-image': `url("${settings.value.backgroundImageUrl || 'https://main.ssss.nyc.mn/background.webp'}")`,
   '--site-bg-blur': backgroundBlurMap[settings.value.backgroundBlur] || '0px',
   '--site-bg-brightness': `${Number(settings.value.backgroundBrightness) || 95}%`,
   '--site-bg-saturation': `${Number(settings.value.backgroundSaturation) || 100}%`,
-  '--site-bg-opacity': String((Number(settings.value.backgroundOpacity) || 0) / 100),
-  '--theme-color': settings.value.themeColor || '#2566d8',
-  '--card-blur': cardBlurMap[settings.value.cardBlur] || '10px'
+  '--site-bg-opacity': String((Number(settings.value.backgroundOpacity) || 0) / 100)
 }));
 
 const homeClasses = computed(() => ({
-  'theme-dark': settings.value.theme === 'dark',
   'layout-full-width': settings.value.fullWidth,
   [`header-${settings.value.headerStyle || 'simple'}`]: true
 }));
@@ -220,8 +252,17 @@ const friendGridStyle = computed(() => ({
   gridTemplateColumns: `repeat(${Math.min(Math.max(Number(settings.value.maxBookmarkColumns) || 6, 3), 8)}, 1fr)`
 }));
 
+const cardLayout = computed(() => ({
+  columns: Math.min(Math.max(Number(settings.value.maxGroupColumns) || 4, 3), 10),
+  height: Math.min(Math.max(Number(settings.value.cardHeight) || 85, 64), 180),
+  gap: Math.min(Math.max(Number(settings.value.cardGap) || 15, 4), 36),
+  iconSize: Math.min(Math.max(Number(settings.value.cardIconSize) || 25, 16), 56),
+  textSize: Math.min(Math.max(Number(settings.value.cardTextSize) || 14, 10), 22),
+  equalHeight: Boolean(settings.value.equalHeightCards)
+}));
+
 function selectEngine(engine) {
-  selectedEngine.value = engine;
+  selectedEngineName.value = engine.name;
 }
 
 function clearSearch() {
@@ -329,7 +370,7 @@ async function handleSearch() {
       }
     }
     if (!found) {
-      alert('未找到相关内容');
+      alert(t.value.notFound);
     }
   } else {
     const url = selectedEngine.value.url(searchQuery.value);
@@ -377,7 +418,7 @@ function handleLogoError(event) {
   transition: color 0.2s, background 0.2s;
 }
 .engine-btn.active, .engine-btn:hover {
-  color: var(--theme-color, #399dff);
+  color: #399dff;
   background: #ffffff1a;
 }
 
@@ -435,7 +476,7 @@ function handleLogoError(event) {
 }
 
 .search-btn:hover {
-  background: var(--theme-color, #3367d6);
+  background: #3367d6;
 }
 
 .home-container {
@@ -576,7 +617,7 @@ function handleLogoError(event) {
 }
 
 .friend-link-btn:hover {
-  color: var(--theme-color, #1976d2);
+  color: #1976d2;
   transform: translateY(-1px);
 }
 
@@ -734,16 +775,11 @@ function handleLogoError(event) {
   transition: color 0.2s;
 }
 .footer-link:hover {
-  color: var(--theme-color, #1976d2);
-}
-
-.theme-dark .search-container,
-.theme-dark :deep(.link-item) {
-  background-color: rgba(17, 24, 39, 0.42);
+  color: #1976d2;
 }
 
 :deep(.link-item) {
-  backdrop-filter: blur(var(--card-blur, 10px));
+  backdrop-filter: blur(10px);
 }
 
 .layout-full-width :deep(.card-grid) {

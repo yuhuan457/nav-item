@@ -83,40 +83,14 @@ const sections = [
     fields: [
       { key: 'siteTitle', label: '页面标题', type: 'text', help: '浏览器标签页和站点名称。' },
       { key: 'siteDescription', label: '页面描述', type: 'text', help: '用于页面 meta 描述。' },
-      { key: 'language', label: '语言', type: 'select', help: '选择界面语言。', options: [
+      { key: 'language', label: '语言', type: 'select', help: '切换前台搜索、弹窗等界面文字。', options: [
         { value: 'zh-CN', label: '中文（简体）' },
-        { value: 'zh-TW', label: '中文（繁体）' },
         { value: 'en', label: 'English' }
       ] },
       { key: 'faviconUrl', label: '网站图标 URL', type: 'url', help: '支持完整 URL 或 /uploads 路径。' },
       { key: 'startUrl', label: '起始 URL', type: 'text', help: 'PWA 或入口地址，默认 /。' },
       { key: 'baseUrl', label: '基础 URL', type: 'url', help: '反向代理或公开访问基础地址。' },
       { key: 'instanceName', label: '实例名称', type: 'text', help: '用于区分多个导航站实例。' }
-    ]
-  },
-  {
-    title: '外观设置',
-    fields: [
-      { key: 'theme', label: '主题', type: 'select', help: '浅色或深色外观。', options: [
-        { value: 'light', label: '浅色' },
-        { value: 'dark', label: '深色' }
-      ] },
-      { key: 'themeColor', label: '主题色', type: 'color', help: '按钮、链接和强调色。' },
-      { key: 'iconStyle', label: '图标样式', type: 'select', help: '预留给卡片图标展示样式。', options: [
-        { value: 'default', label: '默认' },
-        { value: 'gradient', label: '渐变' },
-        { value: 'theme', label: '主题色' }
-      ] },
-      { key: 'cardBlur', label: '卡片背景模糊', type: 'select', help: '服务卡片的背景模糊强度。', options: [
-        { value: 'none', label: '无' },
-        { value: 'sm', label: '小' },
-        { value: 'md', label: '中等' },
-        { value: 'lg', label: '大' }
-      ] },
-      { key: 'bookmarkStyle', label: '书签样式', type: 'select', help: '友链和书签的默认展示风格。', options: [
-        { value: 'default', label: '默认' },
-        { value: 'icon-only', label: '仅图标' }
-      ] }
     ]
   },
   {
@@ -142,11 +116,13 @@ const sections = [
     title: '布局与显示',
     fields: [
       { key: 'fullWidth', label: '全宽模式', type: 'checkbox', help: '让主页内容占据更大宽度。' },
-      { key: 'maxGroupColumns', label: '最大组列数', type: 'number', min: 4, max: 8, help: '大屏幕卡片组最大列数。' },
+      { key: 'maxGroupColumns', label: '卡片列数', type: 'number', min: 3, max: 10, help: '桌面端每行显示的卡片数量。' },
+      { key: 'cardHeight', label: '卡片高度', type: 'number', min: 64, max: 180, help: '主页导航卡片高度，单位 px。' },
+      { key: 'cardGap', label: '卡片间距', type: 'number', min: 4, max: 36, help: '卡片之间的间距，单位 px。' },
+      { key: 'cardIconSize', label: '图标大小', type: 'number', min: 16, max: 56, help: '卡片图标尺寸，单位 px。' },
+      { key: 'cardTextSize', label: '文字大小', type: 'number', min: 10, max: 22, help: '卡片标题文字大小，单位 px。' },
       { key: 'maxBookmarkColumns', label: '书签组最大列数', type: 'number', min: 5, max: 8, help: '友链弹窗最大列数。' },
-      { key: 'equalHeightCards', label: '等高卡片', type: 'checkbox', help: '让同一行卡片高度一致。' },
-      { key: 'disableCollapse', label: '禁用折叠功能', type: 'checkbox', help: '预留分组折叠开关。' },
-      { key: 'initiallyCollapsed', label: '初始折叠分组', type: 'checkbox', help: '预留默认折叠开关。' }
+      { key: 'equalHeightCards', label: '固定卡片高度', type: 'checkbox', help: '开启后所有卡片严格使用上面的卡片高度。' }
     ]
   },
   {
