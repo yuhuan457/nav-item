@@ -12,7 +12,8 @@
 - 用户管理
 - 基础设置管理
 - 页脚版权和友情链接入口可隐藏、可修改
-- 背景、主题色、页面标题、favicon 等前台基础配置
+- 背景、标题、favicon、语言、卡片布局等前台配置可在后台修改
+- 后台支持检查 GitHub 最新版本并刷新前端缓存
 
 ## 默认后台
 
@@ -30,22 +31,9 @@
 - `ADMIN_PASSWORD`：初始化管理员密码，默认 `123456`
 - `JWT_SECRET`：JWT 密钥，建议生产环境自行设置
 
-## 源码部署
+## 1Panel Docker Compose 部署
 
-```bash
-git clone https://github.com/yuhuan457/nav-item.git
-cd nav-item
-npm install
-cd web
-npm install
-npm run build
-cd ..
-npm start
-```
-
-## Docker Compose 部署
-
-在 1Panel 或服务器中拉取本仓库源码后，使用下面的 `docker-compose.yml` 从当前源码构建镜像：
+在 1Panel 创建编排时，可以直接使用下面这一份。它会从 GitHub 拉取源码并构建镜像，适合 1Panel 的编排目录里没有源码文件的情况。
 
 ```yaml
 services:
@@ -66,10 +54,42 @@ services:
     restart: unless-stopped
 ```
 
-如果你启用了 GitHub Actions，也可以使用自动构建出的镜像：
+更新 GitHub 仓库后，需要在 1Panel 里对这个编排执行“重新构建”或“重建”。只重启容器不会更新前端文件。
+
+## 源码目录 Docker Compose 部署
+
+如果你已经把仓库源码 clone 到服务器本地，并且 `docker-compose.yml` 与 `Dockerfile` 在同一个目录，可以把 `build.context` 改为本地目录：
 
 ```yaml
-image: ghcr.io/yuhuan457/nav-item:latest
+services:
+  nav-item:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nav-item
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=123456
+    volumes:
+      - ./database:/app/database
+      - ./uploads:/app/uploads
+    restart: unless-stopped
+```
+
+## 手动源码部署
+
+```bash
+git clone https://github.com/yuhuan457/nav-item.git
+cd nav-item
+npm install
+cd web
+npm install
+npm run build
+cd ..
+npm start
 ```
 
 ## 数据持久化
@@ -79,18 +99,15 @@ image: ghcr.io/yuhuan457/nav-item:latest
 - `./database:/app/database`：保存 SQLite 数据库
 - `./uploads:/app/uploads`：保存上传的图标等文件
 
-## 项目结构
+## 访问地址
+
+- 前台：`http://服务器IP:3000`
+- 后台：`http://服务器IP:3000/admin`
+
+反向代理时，代理目标填写：
 
 ```text
-nav-item/
-├── app.js
-├── config.js
-├── db.js
-├── Dockerfile
-├── docker-compose.yml
-├── routes/
-├── uploads/
-└── web/
+http://127.0.0.1:3000
 ```
 
 ## 仓库

@@ -1,14 +1,14 @@
-<template>
+﻿<template>
   <div v-if="!isLoggedIn" class="login-container">
     <div class="login-card">
-      <h2 class="login-title">后台管理登录</h2>
+      <h2 class="login-title">鍚庡彴绠＄悊鐧诲綍</h2>
       <div class="login-form">
-        <input v-model="username" type="text" placeholder="用户名" class="login-input" @keyup.enter="handleLogin" />
+        <input v-model="username" type="text" placeholder="鐢ㄦ埛鍚? class="login-input" @keyup.enter="handleLogin" />
         <div class="password-input-wrapper">
           <input
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
-            placeholder="密码"
+            placeholder="瀵嗙爜"
             class="login-input password-input"
             @keyup.enter="handleLogin"
           />
@@ -22,10 +22,10 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            返回首页
+            杩斿洖棣栭〉
           </button>
           <button @click="handleLogin" class="login-btn" :disabled="loading">
-            {{ loading ? '登录中...' : '登录' }}
+            {{ loading ? '鐧诲綍涓?..' : '鐧诲綍' }}
           </button>
         </div>
         <p v-if="loginError" class="login-error">{{ loginError }}</p>
@@ -37,12 +37,12 @@
     <aside class="admin-sider" :class="{ open: siderOpen }" @click.self="closeSider">
       <div class="logo clickable" @click="page='welcome'; closeSider()">Admin</div>
       <ul class="menu-list">
-        <li :class="{active: page==='settings'}" @click="page='settings'; closeSider()">基础设置</li>
-        <li :class="{active: page==='menu'}" @click="page='menu'; closeSider()">栏目管理</li>
-        <li :class="{active: page==='card'}" @click="page='card'; closeSider()">卡片管理</li>
-        <li :class="{active: page==='ad'}" @click="page='ad'; closeSider()">广告管理</li>
-        <li :class="{active: page==='friend'}" @click="page='friend'; closeSider()">友链管理</li>
-        <li :class="{active: page==='user'}" @click="page='user'; closeSider()">用户管理</li>
+        <li :class="{active: page==='settings'}" @click="page='settings'; closeSider()">鍩虹璁剧疆</li>
+        <li :class="{active: page==='menu'}" @click="page='menu'; closeSider()">鏍忕洰绠＄悊</li>
+        <li :class="{active: page==='card'}" @click="page='card'; closeSider()">鍗＄墖绠＄悊</li>
+        <li :class="{active: page==='ad'}" @click="page='ad'; closeSider()">骞垮憡绠＄悊</li>
+        <li :class="{active: page==='friend'}" @click="page='friend'; closeSider()">鍙嬮摼绠＄悊</li>
+        <li :class="{active: page==='user'}" @click="page='user'; closeSider()">鐢ㄦ埛绠＄悊</li>
       </ul>
     </aside>
     <main class="admin-main">
@@ -52,6 +52,9 @@
         </button>
         <div class="header-title">{{ pageTitle }}</div>
         <div class="header-actions">
+          <button class="btn update-btn" @click="handleVersionUpdate" :disabled="updateChecking">
+            {{ updateChecking ? '检查中...' : '版本更新' }}
+          </button>
           <span class="home-icon" @click="goHome" title="进入主页">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M3 10.5L12 4l9 6.5V20a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1v-4h-4v4a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V10.5z" stroke="#2566d8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
@@ -60,20 +63,20 @@
       </div>
       <div class="admin-content">
         <div v-if="page==='welcome'" class="welcome-page">
-          <h2 class="welcome-title">欢迎您进入 Nav-Item 后台管理系统</h2>
+          <h2 class="welcome-title">娆㈣繋鎮ㄨ繘鍏?Nav-Item 鍚庡彴绠＄悊绯荤粺</h2>
           <div class="welcome-cards">
             <div class="welcome-card">
               <div class="welcome-icon time-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1abc9c" stroke-width="2"/><path d="M12 6v6l4 2" stroke="#1abc9c" stroke-width="2" stroke-linecap="round"/></svg>
               </div>
-              <div class="welcome-label">上次登录时间</div>
+              <div class="welcome-label">涓婃鐧诲綍鏃堕棿</div>
               <div class="welcome-value">{{ lastLoginTime || '--' }}</div>
             </div>
             <div class="welcome-card">
               <div class="welcome-icon ip-icon">
                 <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#1abc9c" stroke-width="2"/><path d="M12 8a4 4 0 1 1 0 8 4 4 0 0 1 0-8z" stroke="#1abc9c" stroke-width="2"/><circle cx="12" cy="12" r="2" fill="#1abc9c"/></svg>
               </div>
-              <div class="welcome-label">上次登录IP</div>
+              <div class="welcome-label">涓婃鐧诲綍IP</div>
               <div class="welcome-value">{{ lastLoginIp || '--' }}</div>
             </div>
           </div>
@@ -86,7 +89,7 @@
         <UserManage v-if="page==='user'" />
       </div>
       <footer class="admin-footer">
-        <p class="admin-copyright">Copyright © 2025 Nav-Item | <a href="https://github.com/yuhuan457/nav-item" target="_blank" class="footer-link">Powered by yuhuan457</a></p>
+        <p class="admin-copyright">Copyright 漏 2025 Nav-Item | <a href="https://github.com/yuhuan457/nav-item" target="_blank" class="footer-link">Powered by yuhuan457</a></p>
       </footer>
     </main>
   </div>
@@ -94,7 +97,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { login } from '../api';
+import { checkVersion, login } from '../api';
 import MenuManage from './admin/MenuManage.vue';
 import CardManage from './admin/CardManage.vue';
 import AdManage from './admin/AdManage.vue';
@@ -112,6 +115,7 @@ const loading = ref(false);
 const loginError = ref('');
 const showPassword = ref(false);
 const siderOpen = ref(false);
+const updateChecking = ref(false);
 
 const pageTitle = computed(() => {
   switch (page.value) {
@@ -129,7 +133,7 @@ onMounted(() => {
   const token = localStorage.getItem('token');
   isLoggedIn.value = !!token;
   if (isLoggedIn.value) {
-    // 拉取用户信息
+    // 鎷夊彇鐢ㄦ埛淇℃伅
     fetchLastLoginInfo();
   }
 });
@@ -142,13 +146,13 @@ async function fetchLastLoginInfo() {
       lastLoginIp.value = data.last_login_ip || '';
     }
   } catch (error) {
-    console.error('获取用户信息失败:', error);
+    console.error('鑾峰彇鐢ㄦ埛淇℃伅澶辫触:', error);
   }
 }
 
 async function handleLogin() {
   if (!username.value || !password.value) {
-    loginError.value = '请输入用户名和密码';
+    loginError.value = '璇疯緭鍏ョ敤鎴峰悕鍜屽瘑鐮?;
     return;
   }
   
@@ -164,7 +168,7 @@ async function handleLogin() {
       lastLoginIp.value = response.data.lastLoginIp || '';
     }
   } catch (error) {
-    loginError.value = error.response?.data?.message || '登录失败，请检查用户名和密码';
+    loginError.value = error.response?.data?.message || '鐧诲綍澶辫触锛岃妫€鏌ョ敤鎴峰悕鍜屽瘑鐮?;
   } finally {
     loading.value = false;
   }
@@ -176,6 +180,37 @@ function logout() {
   username.value = '';
   password.value = '';
   loginError.value = '';
+}
+
+async function clearFrontendCache() {
+  if ('caches' in window) {
+    const names = await caches.keys();
+    await Promise.all(names.map(name => caches.delete(name)));
+  }
+}
+
+async function handleVersionUpdate() {
+  updateChecking.value = true;
+  try {
+    const res = await checkVersion();
+    const info = res.data;
+    await clearFrontendCache();
+    const message = [
+      `GitHub 最新版本：${info.shortSha || '未知'}`,
+      info.message ? `提交说明：${info.message}` : '',
+      '',
+      '如果已经在 1Panel 重建过容器，点击确定会强制刷新并显示新版。',
+      '如果还没有重建，请先去 1Panel 对 nav-item 重新构建。'
+    ].filter(Boolean).join('\n');
+
+    if (window.confirm(message)) {
+      window.location.href = `${window.location.pathname}?v=${Date.now()}`;
+    }
+  } catch (error) {
+    alert(error.response?.data?.detail || error.response?.data?.error || '版本检查失败，请稍后重试');
+  } finally {
+    updateChecking.value = false;
+  }
 }
 
 function goHome() {
@@ -421,6 +456,25 @@ function closeSider() {
   background: #e74c3c;
   color: #fff;
 }
+.btn.update-btn {
+  background: #e8f0fe;
+  color: #2566d8;
+  border: 1px solid #b7cdfb;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 15px;
+  font-weight: 500;
+  margin: 0;
+  transition: background 0.2s, color 0.2s;
+}
+.btn.update-btn:hover:not(:disabled) {
+  background: #2566d8;
+  color: #fff;
+}
+.btn.update-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 .admin-content {
   flex: 1;
   display: flex;
@@ -597,6 +651,11 @@ function closeSider() {
     font-size: 13px;
     border-radius: 8px;
   }
+  .btn.update-btn {
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 8px;
+  }
   .menu-toggle {
     display: inline-flex !important;
     align-items: center;
@@ -611,7 +670,7 @@ function closeSider() {
     color: #2566d8;
     z-index: 300;
   }
-  /* 表单和按钮间距优化 */
+  /* 琛ㄥ崟鍜屾寜閽棿璺濅紭鍖?*/
   .input, .btn {
     margin-bottom: 8px;
   }

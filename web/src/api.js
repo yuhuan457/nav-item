@@ -55,3 +55,6 @@ export const getUsers = () => axios.get(`${BASE}/users`, { headers: authHeaders(
 // Settings API
 export const getSettings = () => axios.get(`${BASE}/settings`);
 export const updateSettings = (data) => axios.put(`${BASE}/settings`, data, { headers: authHeaders() });
+
+// Version API
+export const checkVersion = () => axios.get(`${BASE}/version/check`, { headers: authHeaders() });
